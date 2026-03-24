@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "squash"
+version = "0.1.0"
+description = "A CLI tool that squashes all files in a directory into a single TXT file."
+authors = [{ name = "LuRex" }]
+requires-python = ">=3.7"
+license = { text = "MIT" }
+dependencies = []
+
+[project.scripts]
+squash = "squash.cli:main"
+
+[tool.ruff.format]
+quote-style = "single"
