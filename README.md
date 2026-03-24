@@ -1,56 +1,64 @@
 # Squash 🍋
 
-A simple, fast Command Line Interface (CLI) tool that takes a directory and "squashes" all its files recursively into a single `.txt` file.
+A fast Command Line Interface (CLI) tool that takes a directory and "squashes" all its files recursively into a single `.txt` file.
 
 It automatically adds a clean header to every file, making it perfect for feeding entire codebases or project directories into Large Language Models (LLMs) for context.
 
 ## Features
 
 - **Recursive:** Captures all files in all subdirectories.
-- **Smart:** Automatically detects and skips binary files to prevent garbage text.
+- **Smart Pruning:** Automatically ignores heavy, irrelevant folders (like `.git` or `node_modules`) and skips binary/media files to prevent garbage text.
+- **Highly Customizable:** Exclude specific folder patterns or file extensions on the fly, and define custom output locations.
 - **Cross-Platform:** Works flawlessly on Windows, Linux, and macOS.
 - **Context-Ready:** Prepends every file with clear metadata (Filename, Filetype, and Relative Location).
 
 ## Installation
 
-1. Open your terminal and navigate to the folder containing the `pyproject.toml` file.
-2. Install the package globally using `pip`:
+Navigate to the folder containing the `pyproject.toml` file and install the package globally using `pip`:
 
 ```bash
 pip install -e .
 ```
 
-_(The `-e` flag installs it in editable mode, so you can tweak the code later without having to reinstall it)._
+_(The `-e` flag installs it in editable mode, allowing you to update the code without reinstalling)._
 
 ## Usage
 
-Once installed, the `squash` command is available system-wide. Simply point it at any directory (relative or absolute):
+Once installed, point the `squash` command at any directory:
 
 ```bash
 squash <path-to-your-folder>
 ```
 
-**Examples:**
+By default, the tool creates a `.txt` file in the _parent_ directory of your target folder, named exactly like the target folder (e.g., squashing `./src` creates `./src.txt`).
+
+### Advanced Usage
+
+You can customize the output location and add your own filtering rules using the available flags:
 
 ```bash
-# Squash a folder in the current directory
-squash ./frontend
+# Define a custom output file path
+squash ./src -o /home/user/Desktop/context.txt
 
-# Squash a folder using an absolute path (Windows)
-squash C:\Users\Projects\MyCode
+# Ignore specific subfolders (e.g., 'tests' and any folder ending with '_bak')
+squash ./src -i tests *_bak
+
+# Ignore specific file extensions (e.g., CSV and JSON files)
+squash ./src -e .csv .json
+
+# Combine everything
+squash ./src -o ./exports/project.txt -i legacy_code -e .md .log
 ```
 
 ## Output Format
 
-The tool will create a `.txt` file in the _parent_ directory of your target folder, named exactly like the target folder (e.g., `MyCode.txt`).
-
-Inside, the squashed files are clearly separated and structured like this:
+Inside the generated text file, the squashed files are clearly separated and structured like this:
 
 ```text
 ============================================================
 Filename: main.py
 Filetype: text/x-python
-Location: MyCode/src/main.py
+Location: src/main.py
 ============================================================
 
 def hello():
@@ -60,7 +68,7 @@ def hello():
 ============================================================
 Filename: index.html
 Filetype: text/html
-Location: MyCode/public/index.html
+Location: src/public/index.html
 ============================================================
 
 <!DOCTYPE html>
