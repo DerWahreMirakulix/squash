@@ -1,15 +1,17 @@
 # Squash 🍋
 
-A fast Command Line Interface (CLI) tool that takes a directory and "squashes" all its files recursively into a single `.txt` file.
+A fast Command Line Interface (CLI) tool that takes a directory and "squashes" all its files recursively into a single `.squash.txt` file.
 
 It automatically adds a clean header to every file, making it perfect for feeding entire codebases or project directories into Large Language Models (LLMs) for context.
 
 ## Features
 
 - **Recursive:** Captures all files in all subdirectories.
-- **Smart Pruning:** Automatically ignores heavy, irrelevant folders (like `.git` or `node_modules`) and skips binary/media files to prevent garbage text.
-- **Highly Customizable:** Exclude specific folder patterns or file extensions on the fly, and define custom output locations.
-- **Cross-Platform:** Works flawlessly on Windows, Linux, and macOS.
+- **Project Structure Overview:** Generates a visual directory tree at the top of the file, clearly marking ignored items with `[IGNORED]`.
+- **Smart Pruning:** Automatically ignores heavy folders (like `.git`, `node_modules`) and skips binary/media files.
+- **Pattern Matching:** Use wildcard patterns (e.g., `temp_*`, `*.log`) to ignore specific files or directories.
+- **Auto-Naming:** Generates the output file based on the target folder name with a unique `.squash.txt` suffix.
+- **Override Defaults:** Easily "un-ignore" default patterns or disable all defaults entirely.
 - **Context-Ready:** Prepends every file with clear metadata (Filename, Filetype, and Relative Location).
 
 ## Installation
@@ -24,41 +26,66 @@ _(The `-e` flag installs it in editable mode, allowing you to update the code wi
 
 ## Usage
 
-Once installed, point the `squash` command at any directory:
+Point the `squash` command at any directory:
 
 ```bash
 squash <path-to-your-folder>
 ```
 
-By default, the tool creates a `.txt` file in the _parent_ directory of your target folder, named exactly like the target folder (e.g., squashing `./src` creates `./src.txt`).
+By default, the tool creates `folder_name.squash.txt` in the **parent directory** of your target folder.
 
-### Advanced Usage
+### Inspecting & Overriding Defaults
 
-You can customize the output location and add your own filtering rules using the available flags:
+Squash comes with a built-in list of ignored folders and extensions.
 
 ```bash
-# Define a custom output file path
-squash ./src -o /home/user/Desktop/context.txt
+# See what is currently ignored by default
+squash --show-ignored
 
-# Ignore specific subfolders (e.g., 'tests' and any folder ending with '_bak')
-squash ./src -i tests *_bak
+# Disable all built-in ignore lists and only use your own
+squash ./src --no-defaults -i secret_folder
 
-# Ignore specific file extensions (e.g., CSV and JSON files)
-squash ./src -e .csv .json
-
-# Combine everything
-squash ./src -o ./exports/project.txt -i legacy_code -e .md .log
+# Include specific default-ignored items (e.g., .git folder and images)
+squash ./src -a .git -ae .png .jpg
 ```
+
+### Advanced Filtering
+
+```bash
+# Save the result into a specific directory
+squash ./src -o ./my_exports
+
+# Ignore additional specific files or patterns
+squash ./src -i config.json test_*
+
+# Ignore additional file extensions
+squash ./src -e .csv .json
+```
+
+> **Note:** If you provide an output directory via `-o`, it must already exist. If the directory is missing, the tool will exit with an error to prevent accidental file placement.
 
 ## Output Format
 
-Inside the generated text file, the squashed files are clearly separated and structured like this:
+Inside the generated `.squash.txt` file, you will first see a complete overview followed by the file contents:
 
 ```text
 ============================================================
+PROJECT STRUCTURE OVERVIEW
+Target: my-app
+============================================================
+
+my-app
+├── .git [IGNORED]
+├── src
+│   ├── main.py
+│   └── utils.py
+├── node_modules [IGNORED]
+└── package.json
+
+============================================================
 Filename: main.py
 Filetype: text/x-python
-Location: src/main.py
+Location: my-app/src/main.py
 ============================================================
 
 def hello():
@@ -66,15 +93,13 @@ def hello():
 
 
 ============================================================
-Filename: index.html
-Filetype: text/html
-Location: src/public/index.html
+Filename: package.json
+Filetype: application/json
+Location: my-app/package.json
 ============================================================
 
-<!DOCTYPE html>
-<html>
-<body>
-    <h1>Hi</h1>
-</body>
-</html>
+{
+  "name": "my-app",
+  "version": "1.0.0"
+}
 ```
