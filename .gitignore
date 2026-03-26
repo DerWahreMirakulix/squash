@@ -4,13 +4,14 @@
 .env
 
 # ---------------------------------------------------
-# Python Build Output & Caches
+# Output & Caches
 # ---------------------------------------------------
 __pycache__
 *.py[cod]
 build
 dist
 *.egg-info/
+*.squash.txt
 
 # ---------------------------------------------------
 # Virtual Environments

@@ -7,21 +7,17 @@ from pathlib import Path
 
 # Default patterns for directories and specific files to ignore
 DEFAULT_IGNORE_PATTERNS = [
-    '.git',
+    '.*',
     '__pycache__',
     'node_modules',
-    '.venv',
     'venv',
     'env',
-    '.idea',
-    '.vscode',
     'build',
     'dist',
     '*.egg-info',
-    '.DS_Store',
     'Thumbs.db',
-    '.gitignore',
     'todo',
+    'todo.*',
     '*.squash.txt',
 ]
 
