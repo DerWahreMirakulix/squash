@@ -103,3 +103,7 @@ Location: my-app/package.json
   "version": "1.0.0"
 }
 ```
+
+---
+
+**Legal Notice:** This project is developed and maintained by Julian Lamplmair. As this repository is referenced in a professional context, please find the full legal notice here: https://jle.systems/legal-notice
